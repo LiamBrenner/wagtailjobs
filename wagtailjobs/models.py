@@ -27,43 +27,43 @@ from wagtail.wagtailsearch import index
 from wagtail.wagtailsearch.backends import get_search_backend
 
 
-INVOICEINDEX_MODEL_CLASSES = []
-_INVOICEINDEX_CONTENT_TYPES = []
+JOBINDEX_MODEL_CLASSES = []
+_JOBINDEX_CONTENT_TYPES = []
 
 
-def get_invoiceindex_content_types():
-    global _INVOICEINDEX_CONTENT_TYPES
-    if len(_INVOICEINDEX_CONTENT_TYPES) != len(INVOICEINDEX_MODEL_CLASSES):
-        _INVOICEINDEX_CONTENT_TYPES = [
+def get_jobindex_content_types():
+    global _JOBINDEX_CONTENT_TYPES
+    if len(_JOBINDEX_CONTENT_TYPES) != len(JOBINDEX_MODEL_CLASSES):
+        _JOBINDEX_CONTENT_TYPES = [
             ContentType.objects.get_for_model(cls)
-            for cls in INVOICEINDEX_MODEL_CLASSES]
-    return _INVOICEINDEX_CONTENT_TYPES
+            for cls in JOBINDEX_MODEL_CLASSES]
+    return _JOBINDEX_CONTENT_TYPES
 
 
-class InvoiceIndexMixin(RoutablePageMixin):
-    invoice_model = None
+class JobIndexMixin(RoutablePageMixin):
+    job_model = None
     subpage_types = []
 
-    @route(r'^(?P<uuid>[0-9a-f-]+)/$', name='invoice')
-    def v_invoice(s, r, **k):
-        return frontend.invoice_detail(r, s, **k)
+    @route(r'^(?P<uuid>[0-9a-f-]+)/$', name='job')
+    def v_job(s, r, **k):
+        return frontend.job_detail(r, s, **k)
 
-    @route(r'^(?P<uuid>[0-9a-f-]+)/pdf/$', name='invoice_pdf')
-    def v_invoice_pdf(s, r, **k):
-        return frontend.invoice_pdf(r, s, **k)
+    @route(r'^(?P<uuid>[0-9a-f-]+)/pdf/$', name='job_pdf')
+    def v_job_pdf(s, r, **k):
+        return frontend.job_pdf(r, s, **k)
 
     @classmethod
-    def get_invoice_model(cls):
-        if isinstance(cls.invoice_model, models.Model):
-            return cls.invoice_model
-        elif isinstance(cls.invoice_model, string_types):
-            return resolve_model_string(cls.invoice_model, cls._meta.app_label)
+    def get_job_model(cls):
+        if isinstance(cls.job_model, models.Model):
+            return cls.job_model
+        elif isinstance(cls.job_model, string_types):
+            return resolve_model_string(cls.job_model, cls._meta.app_label)
         else:
-            raise ValueError('Can not resolve {0}.invoice_model in to a model: {1!r}'.format(
-                cls.__name__, cls.invoice_model))
+            raise ValueError('Can not resolve {0}.job_model in to a model: {1!r}'.format(
+                cls.__name__, cls.job_model))
 
 
-class AbstractInvoiceQuerySet(QuerySet):
+class AbstractJobQuerySet(QuerySet):
     def search(self, query_string, fields=None, backend='default'):
         """
         This runs a search query on all the pages in the QuerySet
@@ -72,8 +72,8 @@ class AbstractInvoiceQuerySet(QuerySet):
         return search_backend.search(query_string, self)
 
 
-class AbstractInvoice(models.Model):
-    invoiceindex = models.ForeignKey(Page)
+class AbstractJob(models.Model):
+    jobindex = models.ForeignKey(Page)
     uuid = UUIDField(auto=True, null=True, default=None)
     email = models.EmailField(blank=True)
     issue_date = models.DateTimeField('Issue date', default=timezone.now)
@@ -84,7 +84,7 @@ class AbstractInvoice(models.Model):
         FieldPanel('email'),
     ]
 
-    objects = AbstractInvoiceQuerySet.as_manager()
+    objects = AbstractJobQuerySet.as_manager()
 
     class Meta:
         abstract = True
@@ -99,15 +99,15 @@ class AbstractInvoice(models.Model):
             return '{0}/{1}.html'.format(self._meta.app_label, self._meta.model_name)
 
     def url(self):
-        invoiceindex = self.invoiceindex.specific
-        url = invoiceindex.url + invoiceindex.reverse_subpage('invoice', kwargs={
+        jobindex = self.jobindex.specific
+        url = jobindex.url + jobindex.reverse_subpage('job', kwargs={
             'uuid': str(self.uuid)})
         return url
 
     def serve(self, request):
         return render(request, self.get_template(request), {
-            'self': self.invoiceindex.specific,
-            'invoice': self,
+            'self': self.jobindex.specific,
+            'job': self,
         })
 
     def serve_pdf(self, request):
@@ -134,7 +134,7 @@ class AbstractInvoice(models.Model):
 
         # Render html content through html template with context
         template = get_template(settings.PDF_TEMPLATE)
-        html = template.render(Context({'invoice': self}))
+        html = template.render(Context({'job': self}))
         print type(self)
 
         # Write PDF to file

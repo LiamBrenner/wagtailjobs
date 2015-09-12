@@ -1,0 +1,31 @@
+{% extends "wagtailadmin/base.html" %}
+{% load i18n %}
+{% block titletag %}{% trans "jobs" %}{% endblock %}
+{% block bodyclass %}menu-job{% endblock %}
+{% block content %}
+
+    <header class="nice-padding">
+        <div class="row">
+            <div class="left">
+            <div class='col'>
+                <h1 class="icon icon-edit">{% blocktrans %}jobs{% endblocktrans %} </h1>
+                </div>
+            <form class='col search-form' action='{% url 'wagtailjobs_search' pk=jobindex.pk %}' method="GET">
+    {% csrf_token %}
+    {{form}}
+<li class="submit visuallyhidden"><input type="submit" value="Search" class="button"></li>
+</form>
+</div>
+<div class='right'>
+            <div class="addbutton">
+                <a href="{% url 'wagtailjobs_create' jobindex.pk %}" class="button bicolor icon icon-plus">{% blocktrans %}Create job{% endblocktrans %}</a>
+            </div>
+            </div>
+        </div>
+    </header>
+    {% if job_list.exists %}
+    {% include 'wagtailjobs/job_list.html' %}
+    {% else %}
+        <div class="nice-padding">No jobs yet!</div>
+    {% endif %}
+{% endblock %}

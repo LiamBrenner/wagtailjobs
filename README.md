@@ -1,20 +1,20 @@
-#wagtailinvoices
+#wagtailjobs
 
 
-A plugin for Wagtail that provides invoice functionality
-[Documentation on ReadTheDocs](https://wagtailinvoices.readthedocs.org/en/latest/)
+A plugin for Wagtail that provides job functionality
+[Documentation on ReadTheDocs](https://wagtailjobs.readthedocs.org/en/latest/)
 ##Installing
 
 
 Install using pip
 ```
-pip install wagtailinvoices
+pip install wagtailjobs
 ```
 It works with Wagtail 1.0b2 and upwards.
 
 ##Using
 
-Create invoice models for your application that inherit from the relevant `wagtailinvoices` models:
+Create job models for your application that inherit from the relevant `wagtailjobs` models:
 
 ``` python
 
@@ -24,21 +24,21 @@ Create invoice models for your application that inherit from the relevant `wagta
     from wagtail.wagtailcore.fields import RichTextField
     from wagtail.wagtailcore.models import Page
 
-    from wagtailinvoices.models import InvoiceIndexMixin, AbstractInvoice
-    from wagtailinvoices.decorators import invoiceindex
+    from wagtailjobs.models import jobIndexMixin, Abstractjob
+    from wagtailjobs.decorators import jobindex
 
 
-    # The decorator registers this model as a invoice index
-    @invoiceindex
-    class InvoiceIndex(InvoiceIndexMixin, Page):
+    # The decorator registers this model as a job index
+    @jobindex
+    class jobIndex(jobIndexMixin, Page):
         # Add extra fields here, as in a normal Wagtail Page class, if required
-        invoice_model = 'Invoice'
+        job_model = 'job'
 
 
-    class Invoice(AbstractInvoice):
-        # Invoice is a normal Django model, *not* a Wagtail Page.
+    class job(Abstractjob):
+        # job is a normal Django model, *not* a Wagtail Page.
         # Add any fields required for your page.
-        # It already has ``date`` field, and a link to its parent ``InvoiceIndex`` Page
+        # It already has ``date`` field, and a link to its parent ``jobIndex`` Page
         full_name = models.CharField(max_length=255)
         organization = models.CharField(max_length=255)
         phone_number = models.CharField(max_length=255)
@@ -48,7 +48,7 @@ Create invoice models for your application that inherit from the relevant `wagta
             FieldPanel('full_name', classname='full'),
             FieldPanel('organization'),
             FieldPanel('phone_number')
-        ] + AbstractInvoice.panels
+        ] + Abstractjob.panels
 
         def __unicode__(self):
             return self.full_name

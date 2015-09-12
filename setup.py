@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 """
-Install wagtailinvoices using setuptools
+Install wagtailjobs using setuptools
 """
 
-from wagtailinvoices import __version__
+from wagtailjobs import __version__
 
 with open('README.md', 'r') as f:
     readme = f.read()
@@ -16,19 +16,19 @@ except ImportError:
     from setuptools import setup, find_packages
 
 setup(
-    name='wagtailinvoices',
+    name='wagtailjobs',
     version=__version__,
-    description='Invoice mod for the Wagtail CMS',
+    description='Jobs mod for the Wagtail CMS',
     long_description=readme,
     author='Liam Brenner',
     author_email='liam.brenner@gmail.com',
-    url='https://bitbucket.org/sablewalnut/wagtailinvoices',
+    url='https://bitbucket.org/sablewalnut/wagtailjobs',
 
     install_requires=[
         'wagtail>=1.0b2',
         'xhtml2pdf==0.0.6',
         'django-uuidfield==0.5.0',
-        'braintree==3.13.0'
+        'braintree>=3.13.0'
     ],
     zip_safe=False,
     license='BSD License',

@@ -8,20 +8,20 @@ from wagtail.wagtailcore import hooks
 from wagtail.wagtailadmin.menu import MenuItem
 
 from . import urls
-from .permissions import user_can_edit_invoices
+from .permissions import user_can_edit_jobs
 
 
 @hooks.register('register_admin_urls')
 def register_admin_urls():
     return [
-        url(r'^invoices/', include(urls)),
+        url(r'^jobs/', include(urls)),
     ]
 
 
 @hooks.register('construct_main_menu')
 def construct_main_menu(request, menu_items):
-    if user_can_edit_invoices(request.user):
+    if user_can_edit_jobs(request.user):
         menu_items.append(
-            MenuItem(_('Invoices'), urlresolvers.reverse('wagtailinvoices_choose'),
-                     classnames='icon icon-plus', order=250)
+            MenuItem(_('Jobs'), urlresolvers.reverse('wagtailjobs_choose'),
+                     classnames='icon icon-user', order=250)
         )

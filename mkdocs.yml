@@ -1,4 +1,4 @@
-site_name: wagtailinvoices
+site_name: wagtailjobs
 theme: readthedocs
 pages:
 - Home: 'index.md'

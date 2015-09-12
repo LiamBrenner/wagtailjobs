@@ -1,13 +1,13 @@
 {% extends "wagtailadmin/base.html" %}
 {% load i18n %}
-{% block titletag %}{% blocktrans %}New invoice{% endblocktrans %}{% endblock %}
-{% block bodyclass %}menu-invoice{% endblock %}
+{% block titletag %}{% blocktrans %}New job{% endblocktrans %}{% endblock %}
+{% block bodyclass %}menu-job{% endblock %}
 {% block content %}
     {% trans "New" as new_str %}
-    {% trans "invoice" as invoicepost_str %}
-    {% include "wagtailadmin/shared/header.html" with title=new_str subtitle=invoicepost_str icon="invoice" %}
+    {% trans "job" as jobpost_str %}
+    {% include "wagtailadmin/shared/header.html" with title=new_str subtitle=jobpost_str icon="job" %}
 
-    <form action="{% url 'wagtailinvoices_create' pk=invoiceindex.pk %}" method="POST">
+    <form action="{% url 'wagtailjobs_create' pk=jobindex.pk %}" method="POST">
         {% csrf_token %}
         {{ edit_handler.render_form_content }}
 

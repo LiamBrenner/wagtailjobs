@@ -1,16 +1,16 @@
 {% extends "wagtailadmin/base.html" %}
 {% load i18n %}
-{% block titletag %}{% trans "Invoices" %}{% endblock %}
-{% block bodyclass %}menu-invoice{% endblock %}
+{% block titletag %}{% trans "jobs" %}{% endblock %}
+{% block bodyclass %}menu-job{% endblock %}
 {% block content %}
 
     <header class="nice-padding">
         <div class="row">
             <div class="left">
             <div class='col'>
-                <h1 class="icon icon-edit">{% blocktrans %}Invoices{% endblocktrans %} </h1>
+                <h1 class="icon icon-edit">{% blocktrans %}jobs{% endblocktrans %} </h1>
                 </div>
-            <form class='col search-form' action='{% url 'wagtailinvoices_search' pk=invoiceindex.pk %}' method="GET">
+            <form class='col search-form' action='{% url 'wagtailjobs_search' pk=jobindex.pk %}' method="GET">
     {% csrf_token %}
     {{form}}
 <li class="submit visuallyhidden"><input type="submit" value="Search" class="button"></li>
@@ -18,13 +18,13 @@
 </div>
 <div class='right'>
             <div class="addbutton">
-                <a href="{% url 'wagtailinvoices_create' invoiceindex.pk %}" class="button bicolor icon icon-plus">{% blocktrans %}Create Invoice{% endblocktrans %}</a>
+                <a href="{% url 'wagtailjobs_create' jobindex.pk %}" class="button bicolor icon icon-plus">{% blocktrans %}Create job{% endblocktrans %}</a>
             </div>
             </div>
         </div>
     </header>
-    {% if invoice_list %}
-        {% include 'wagtailinvoices/invoice_list.html' %}
+    {% if job_list %}
+        {% include 'wagtailjobs/job_list.html' %}
     {% else %}
         <div class="nice-padding">Your search results didn't return anything!</div>
     {% endif %}

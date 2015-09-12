@@ -1,21 +1,21 @@
 {% extends "wagtailadmin/base.html" %}
 {% load i18n %}
-{% block titletag %}{% trans "Invoices" %}{% endblock %}
-{% block bodyclass %}menu-invoice{% endblock %}
+{% block titletag %}{% trans "jobs" %}{% endblock %}
+{% block bodyclass %}menu-job{% endblock %}
 {% block content %}
 
-    {% include "wagtailadmin/shared/header.html" with title="Invoices" icon="invoices" %}
+    {% include "wagtailadmin/shared/header.html" with title="jobs" icon="jobs" %}
 
     <div class="nice-padding">
-        {% if has_invoice %}
+        {% if has_job %}
 
             <ul class="listing">
-                {% for invoiceindex, model_type in invoiceindex_list %}
+                {% for jobindex, model_type in jobindex_list %}
                     <li>
                         <div class="row row-flush title">
                             <h2>
-                                <a href="{% url 'wagtailinvoices_index' pk=invoiceindex.pk %}" class="col6">
-                                    {{ invoiceindex.title }}
+                                <a href="{% url 'wagtailjobs_index' pk=jobindex.pk %}" class="col6">
+                                    {{ jobindex.title }}
                                 </a>
                             </h2>
                             <small class="col6">{{ model_type|title }}</small>
@@ -24,7 +24,7 @@
                 {% endfor %}
             </ul>
         {% else %}
-            <p>There are no payment pages yet - go add one!</p>
+            <p>There are no job pages yet - go add one!</p>
         {% endif %}
     </div>
 {% endblock %}

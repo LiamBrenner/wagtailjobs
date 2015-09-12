@@ -1,14 +1,14 @@
 {% extends "wagtailadmin/base.html" %}
 {% load i18n %}
 {% load wagtailroutablepage_tags %}
-{% block titletag %}{% trans "Invoices" %}{% endblock %}
-{% block bodyclass %}menu-invoice{% endblock %}
+{% block titletag %}{% trans "jobs" %}{% endblock %}
+{% block bodyclass %}menu-job{% endblock %}
 {% block content %}
 
     {% trans "Edit" as new_str %}
-    {% include "wagtailadmin/shared/header.html" with title=new_str subtitle=invoice icon="invoice" %}
+    {% include "wagtailadmin/shared/header.html" with title=new_str subtitle=job icon="job" %}
 
-    <form action="{% url 'wagtailinvoices_edit' pk=invoiceindex.pk invoice_pk=invoice.pk %}" method="POST">
+    <form action="{% url 'wagtailjobs_edit' pk=jobindex.pk job_pk=job.pk %}" method="POST">
         {% csrf_token %}
         {{ edit_handler.render_form_content }}
 
@@ -21,7 +21,7 @@
 
                         <ul role="menu">
                         <li>
-                        <a href='{% routablepageurl invoice.invoiceindex.specific 'invoice_pdf' uuid=invoice.uuid %}' target='_blank' name='{{print_button_name}}'> Open Invoice PDF </a>
+                        <a href='{% routablepageurl job.jobindex.specific 'job_pdf' uuid=job.uuid %}' target='_blank' name='{{print_button_name}}'> Open job PDF </a>
                         </li>
                         <li>
                             <input type="submit" value="{% trans 'Update and send' %}" name='{{send_button_name}}' />

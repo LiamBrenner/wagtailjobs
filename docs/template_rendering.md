@@ -1,21 +1,21 @@
 #Required templates
-Variables are accessed within the template via `{{invoice.(var name)}}`, the template tag `{{link}}` returns a link to that specific invoice. Templates to be used are defined in your `settings.py` or similar See [Getting Started -Settings](https://wagtailinvoices.readthedocs.org/en/latest/getting_started/#defining-settings)
+Variables are accessed within the template via `{{job.(var name)}}`, the template tag `{{link}}` returns a link to that specific job. Templates to be used are defined in your `settings.py` or similar See [Getting Started -Settings](https://wagtailjobs.readthedocs.org/en/latest/getting_started/#defining-settings)
 
 For example
 ``` html
-Hi <b>{% if invoice.client_organization and not invoice.client_full_name %}{{invoice.client_organization}}{% else %}{{invoice.name}}{% endif %}</b>, 
+Hi <b>{% if job.client_organization and not job.client_full_name %}{{job.client_organization}}{% else %}{{job.name}}{% endif %}</b>, 
 <br> 
-Here is a link to the Invoice for the services you have requested:
+Here is a link to the job for the services you have requested:
 <br>
-<b>Total</b>: $<b>{{invoice.total}}</b> AUD
+<b>Total</b>: $<b>{{job.total}}</b> AUD
 <br>
-<b>Inclusive of</b>: $<b>{{invoice.gst|floatformat:2}}</b>GST
+<b>Inclusive of</b>: $<b>{{job.gst|floatformat:2}}</b>GST
 <br>
 <b>Payment link</b>: {{link}} 
 <br>
 <small style='color:red;'> Please allow 5-30 seconds page loading time. </small>
 <br>
-<br> Your Invoice Number is: <b>#{{invoice.id}}</b>
+<br> Your job Number is: <b>#{{job.id}}</b>
 <br><br>
 <br>
 <b>This is an automatically generated message.</b>
@@ -65,8 +65,8 @@ Method that retrieve certain information can be defined in the models to be then
             amount = amount + i.amount
         return amount
 ```
-All those variables would be accesible as `{{invoice.(function name)}}` eg `{{invoice.due}}`
+All those variables would be accesible as `{{job.(function name)}}` eg `{{job.due}}`
 
-#Rendering invoices to pdf format
-The plugin/module expects that you have defined your `PDF_TEMPLATE` file in your settings which is used when trying to display the invoice as a PDF.
-Similarly variables are accessed via `{{invoice.(var name)}}` 
+#Rendering jobs to pdf format
+The plugin/module expects that you have defined your `PDF_TEMPLATE` file in your settings which is used when trying to display the job as a PDF.
+Similarly variables are accessed via `{{job.(var name)}}` 

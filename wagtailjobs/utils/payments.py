@@ -30,11 +30,11 @@ def get_client_key():
     return client_token
 
 
-def do_payment(amount, email, nonce, invoice_id):
+def do_payment(amount, email, nonce, job_id):
     result = braintree.Transaction.sale({
         "amount": amount,
         "payment_method_nonce": nonce,
-        "order_id": invoice_id,
+        "order_id": job_id,
         "customer": {
             "email": email,
         },
@@ -59,9 +59,9 @@ def direct_do_payment(email, amount, nonce):
     return result
 
 
-def send_receipts(invoice, email, amount):
-    name = invoice.client_full_name
-    id = invoice.id
+def send_receipts(job, email, amount):
+    name = job.client_full_name
+    id = job.id
 
     # Administrator successful payment receipt
     admin_receipt_message = render_to_string(
