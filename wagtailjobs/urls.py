@@ -19,7 +19,4 @@ urlpatterns = [
         name='wagtailjobs_delete'),
     url(r'^(?P<pk>\d+)/copy/(?P<job_pk>.*)/$', editor.copy,
         name='wagtailjobs_copy'),
-    # pays
-    url(r'^$', chooser.payindex,
-        name='wagtailjobs_payindex'),
 ]

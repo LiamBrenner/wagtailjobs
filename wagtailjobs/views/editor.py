@@ -11,6 +11,7 @@ from django.template.loader import get_template
 from django.template import Context
 from django.http import HttpResponse
 from django.conf import settings
+from django.utils import timezone
 
 
 # TODO Swap with django.utils.lru_cache.lru_cache at Django 1.7
@@ -19,6 +20,7 @@ from django.utils.functional import memoize
 from wagtail.wagtailadmin.edit_handlers import (
     ObjectList, extract_panel_definitions_from_model_class)
 from wagtail.wagtailcore.models import Page
+from wagtail.wagtailadmin.forms import CopyForm
 
 from ..models import get_jobindex_content_types
 from django.utils.module_loading import import_string
@@ -212,13 +214,19 @@ def delete(request, pk, job_pk):
 def copy(request, pk, job_pk):
     jobindex = get_object_or_404(Page, pk=pk, content_type__in=get_jobindex_content_types()).specific
     Job = jobindex.get_job_model()
-    job = get_object_or_404(Job, jobindex=jobindex, pk=job_pk)
+    job = Job.objects.get(id=job_pk)
 
     for i in range(8):
         print 'hi'
+        print job
 
     if request.method == 'POST':
-        job.objects.clone()
+        job.pk = None
+        job.uuid = None
+        job.issue_date = timezone.now()
+        job.save()
+        print job.uuid
+        print job.pk
         return redirect('wagtailjobs_index', pk=pk)
 
     return render(request, 'wagtailjobs/copy.html', {
