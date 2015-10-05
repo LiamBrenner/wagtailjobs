@@ -119,12 +119,12 @@ def create(request, pk):
     if request.method == 'POST':
 
         form = EditForm(request.POST, request.FILES, instance=job)
-        is_sending_email = send_button_name in request.POST
-        if form.is_valid() and validation(request, job, is_sending_email):
+        is_sending_job = send_button_name in request.POST
+        if form.is_valid() and validation(request, job, is_sending_job):
             job = form.save()
             job.save()
 
-            if is_sending_email:
+            if is_sending_job:
                 send_job(request, job)
                 messages.success(request, _('The job "{0!s}" has been added').format(job))
                 return redirect('wagtailjobs_index', pk=jobindex.pk)
@@ -154,7 +154,6 @@ def edit(request, pk, job_pk):
     Job = jobindex.get_job_model()
     job = get_object_or_404(Job, jobindex=jobindex, pk=job_pk)
     send_button_name = 'send_job'
-    print_button_name = 'serve_pdf'
 
     EditHandler = get_job_edit_handler(Job)
     EditForm = EditHandler.get_form_class(Job)
@@ -163,7 +162,6 @@ def edit(request, pk, job_pk):
         form = EditForm(request.POST, request.FILES, instance=job)
 
         is_sending_email = send_button_name in request.POST
-        is_rendering_pdf = print_button_name in request.POST
 
         if form.is_valid() and validation(request, job, is_sending_email):
             job = form.save()
@@ -174,10 +172,8 @@ def edit(request, pk, job_pk):
                 messages.success(request, _('The job "{0!s}" has been updated').format(job))
                 return redirect('wagtailjobs_index', pk=jobindex.pk)
 
-            elif is_rendering_pdf:
-                serve_pdf(job, request)
-
             else:
+                print job.uuid
                 messages.success(request, _('The job "{0!s}" has been updated').format(job))
                 return redirect('wagtailjobs_index', pk=jobindex.pk)
 
@@ -192,7 +188,6 @@ def edit(request, pk, job_pk):
         'jobindex': jobindex,
         'job': job,
         'send_button_name': send_button_name,
-        'print_button_name': print_button_name,
         'form': form,
         'edit_handler': edit_handler,
     })
@@ -201,14 +196,32 @@ def edit(request, pk, job_pk):
 @permission_required('wagtailadmin.access_admin')  # further permissions are enforced within the view
 def delete(request, pk, job_pk):
     jobindex = get_object_or_404(Page, pk=pk, content_type__in=get_jobindex_content_types()).specific
-    job = jobindex.get_job_model()
-    job = get_object_or_404(job, jobindex=jobindex, pk=job_pk)
+    Job = jobindex.get_job_model()
+    job = get_object_or_404(Job, jobindex=jobindex, pk=job_pk)
 
     if request.method == 'POST':
         job.delete()
         return redirect('wagtailjobs_index', pk=pk)
 
     return render(request, 'wagtailjobs/delete.html', {
+        'jobindex': jobindex,
+        'job': job,
+    })
+
+@permission_required('wagtailadmin.access_admin')  # further permissions are enforced within the view
+def copy(request, pk, job_pk):
+    jobindex = get_object_or_404(Page, pk=pk, content_type__in=get_jobindex_content_types()).specific
+    Job = jobindex.get_job_model()
+    job = get_object_or_404(Job, jobindex=jobindex, pk=job_pk)
+
+    for i in range(8):
+        print 'hi'
+
+    if request.method == 'POST':
+        job.objects.clone()
+        return redirect('wagtailjobs_index', pk=pk)
+
+    return render(request, 'wagtailjobs/copy.html', {
         'jobindex': jobindex,
         'job': job,
     })

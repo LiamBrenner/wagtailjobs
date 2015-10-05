@@ -2,10 +2,14 @@
 <table class="listing full-width">
             <colgroup>
             <thead><tr class="table-headers">
-                <th class="title">Name</th>
-                <th class='issued_on'>Issued on</th>
-                <th class="last_updated">Last Updated</th>
-                <th class="date">job No.</th>
+                <th class="title">Passenger (Contact)</th>
+                <th class='setting_time'>Setting Time</th>
+                <th class="pickup_time">Pickup Time</th>
+                <th class='pickup_location'>Pickup Location</th>
+                <th class='destination'> Destination </th>
+                <th class='car_number'> Car No. </th>
+                <th class='driver'> Driver </th>
+                <th class="date">Job No.</th>
             </tr></thead>
             <tbody>
             {% for job in job_list|dictsortreversed:"issue_date" %}
@@ -13,22 +17,33 @@
                     <td class="title">
                         <h2>
                             <a href="{% url 'wagtailjobs_edit' pk=jobindex.pk job_pk=job.pk %}">
-                                {{job}}
+                                {{job}} {% if job.contact_details %}({{job.contact_details}}){% endif %}
                             </a>
                         </h2>
                         <ul class="actions">
                             <li><a href="{% url 'wagtailjobs_edit' pk=jobindex.pk job_pk=job.pk %}" class="button button-small">{% trans 'Edit' %}</a></li>
+                            <li><a href="{% url 'wagtailjobs_copy' pk=jobindex.pk job_pk=job.pk %}" class="button button-small button-secondary yes">{% trans 'Copy' %}</a></li>
                             <li><a href="{% url 'wagtailjobs_delete' pk=jobindex.pk job_pk=job.pk %}" class="button button-small button-secondary no">{% trans 'Delete' %}</a></li>
                         </ul>
                     </td>
-                    <td class='issued'> {{ job.issue_date|date:"d M Y H:i"}} </td>
-                    <td class='updated'>
-                        {% if job.last_updated %}
-                        <div class="human-readable-date" title="{{ job.last_updated|date:"d M Y H:i" }}">
-                        {{ job.last_updated|timesince }} ago</div>{% endif %}
+                    <td class='setting_time'> {{ job.setting_time|date:"d M Y h:iA"}} </td>
+                    <td class='pickup_time'>
+                        {{ job.pickup_time|date:"d M Y h:iA" }}
                     </td>
-                    <td class="date">
-                        {{ job.id }}
+                    <td class="pickup_location">
+                        {{ job.pickup_location }}
+                    </td>
+                    <td class='destination'>
+                    	{{job.destination}}
+                    </td>
+                    <td class='car_number'>
+                    	{{job.car_number}}
+                    </td>
+                    <td class='driver'>
+                    	{{job.driver}}
+                    </td>
+                    <td class='job_id'>
+                    	{{job.id}}
                     </td>
                 </tr>
             {% endfor %}

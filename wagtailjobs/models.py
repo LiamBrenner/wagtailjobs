@@ -75,13 +75,21 @@ class AbstractJobQuerySet(QuerySet):
 class AbstractJob(models.Model):
     jobindex = models.ForeignKey(Page)
     uuid = UUIDField(auto=True, null=True, default=None)
-    email = models.EmailField(blank=True)
     issue_date = models.DateTimeField('Issue date', default=timezone.now)
     last_updated = models.DateTimeField(auto_now=True)
+    amount = models.DecimalField(
+        max_digits=6,
+        decimal_places=2,
+        help_text='Without dollar sign($)')
+    cut = models.DecimalField(
+        max_digits=6,
+        decimal_places=2,
+        help_text='Without dollar sign($)')
+
 
     panels = [
-        FieldPanel('issue_date'),
-        FieldPanel('email'),
+        FieldPanel('amount'),
+        FieldPanel('cut'),
     ]
 
     objects = AbstractJobQuerySet.as_manager()

@@ -53,3 +53,14 @@ def search(request, pk):
         'job_list': job_list,
         'form': form,
     })
+
+@permission_required('wagtailadmin.access_admin')  # further permissions are enforced within the view
+def payindex(request):
+    jobindex = get_object_or_404(Page, pk=9, content_type__in=get_jobindex_content_types()).specific
+    job = jobindex.get_job_model()
+    job_list = job.objects.filter(jobindex=jobindex)
+
+
+    return render(request, 'wagtailjobs/pays.html', {
+        'job_list': job_list,
+    })
