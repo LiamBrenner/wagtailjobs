@@ -81,15 +81,9 @@ class AbstractJob(models.Model):
         max_digits=6,
         decimal_places=2,
         help_text='Without dollar sign($)')
-    cut = models.DecimalField(
-        max_digits=6,
-        decimal_places=2,
-        help_text='Without dollar sign($)')
-
 
     panels = [
         FieldPanel('amount'),
-        FieldPanel('cut'),
     ]
 
     objects = AbstractJobQuerySet.as_manager()
