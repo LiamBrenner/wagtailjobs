@@ -1,6 +1,5 @@
 {% extends "wagtailadmin/base.html" %}
 {% load i18n %}
-{% load wagtailroutablepage_tags %}
 {% block titletag %}{% trans "jobs" %}{% endblock %}
 {% block bodyclass %}menu-job{% endblock %}
 {% block content %}
@@ -21,10 +20,7 @@
 
                         <ul role="menu">
                         <li>
-                        <a href='{% routablepageurl job.jobindex.specific 'job_pdf' uuid=job.uuid %}' target='_blank' name='{{print_button_name}}'> Open job PDF </a>
-                        </li>
-                        <li>
-                            <input type="submit" value="{% trans 'Update and send' %}" name='{{send_button_name}}' />
+                            <input type="submit" value="{% trans 'Update and Send To Driver(s)' %}" name='{{send_button_name}}' />
                         </li>
                     </div>
                 </li>
