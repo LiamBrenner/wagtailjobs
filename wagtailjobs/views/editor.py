@@ -26,7 +26,7 @@ from ..models import get_jobindex_content_types
 from django.utils.module_loading import import_string
 
 validation = import_string(getattr(settings, 'WAGTAIL_JOBS_VALIDATION', 'wagtailjobs.utils.validation.validation'))
-extra_step = import_string(getattr(settings, 'WAGTAIL_JOBS_EXTRA_STEP', 'wagtailjobs.utils.extra_step.extra_step'))
+extra_step = import_string(getattr(settings, 'WAGTAIL_JOBS_EXTRA_STEP', 'wagtailjobs.utils.extra_steps.extra_step'))
 
 
 def get_job_edit_handler(Job):
@@ -167,9 +167,7 @@ def edit(request, pk, job_pk):
         is_sending_email = send_button_name in request.POST
 
         if form.is_valid() and validation(request, job, is_sending_email):
-            job = form.save()
-            extra_step(request, job)
-            job.save()
+            extra_step(request, job, form)
 
             if is_sending_email:
                 send_job(request, job)
