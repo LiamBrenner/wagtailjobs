@@ -23,7 +23,10 @@
                         <ul class="actions">
                             <li><a href="{% url 'wagtailjobs_edit' pk=jobindex.pk job_pk=job.pk %}" class="button button-small">{% trans 'Edit' %}</a></li>
                             <li><a href="{% url 'wagtailjobs_copy' pk=jobindex.pk job_pk=job.pk %}" class="button button-small button-secondary yes">{% trans 'Copy' %}</a></li>
+                            <li><a href="{% url 'wagtailjobs_invoice' pk=jobindex.pk job_pk=job.pk %}" class="button button-small button-secondary yes">{% trans 'Invoice' %}</a></li>
                             <li><a href="{% url 'wagtailjobs_delete' pk=jobindex.pk job_pk=job.pk %}" class="button button-small button-secondary no">{% trans 'Delete' %}</a></li>
+
+
                         </ul>
                     </td>
                     <td class='setting_time'> {{ job.setting_time|date:"d M Y h:iA"}} </td>

@@ -12,7 +12,8 @@ from django.template import Context
 from django.http import HttpResponse
 from django.conf import settings
 from django.utils import timezone
-
+from tlt.invoices.models import Invoice, InvoiceIndex
+from tlt.invoices.models import Job as InvoiceJob
 
 # TODO Swap with django.utils.lru_cache.lru_cache at Django 1.7
 from django.utils.functional import memoize
@@ -216,10 +217,6 @@ def copy(request, pk, job_pk):
     Job = jobindex.get_job_model()
     job = Job.objects.get(id=job_pk)
 
-    for i in range(8):
-        print 'hi'
-        print job
-
     if request.method == 'POST':
         job.pk = None
         job.uuid = None
@@ -230,6 +227,32 @@ def copy(request, pk, job_pk):
         return redirect('wagtailjobs_index', pk=pk)
 
     return render(request, 'wagtailjobs/copy.html', {
+        'jobindex': jobindex,
+        'job': job,
+    })
+
+
+@permission_required('wagtailadmin.access_admin')  # further permissions are enforced within the view
+def invoice(request, pk, job_pk):
+    jobindex = get_object_or_404(Page, pk=pk, content_type__in=get_jobindex_content_types()).specific
+    Job = jobindex.get_job_model()
+    job = Job.objects.get(id=job_pk)
+
+    if request.method == 'POST':
+        invoice = Invoice.objects.create(
+            full_name=job.passenger_name,
+            invoiceindex=InvoiceIndex.objects.first(),
+            phone_number=job.phone_number,
+            payment_received=False,
+            email=job.passenger_email,
+            )
+        InvoiceJob.objects.create(
+            invoice=invoice,
+            job=job
+            )
+        return redirect('wagtailjobs_index', pk=pk)
+
+    return render(request, 'wagtailjobs/generate_invoice.html', {
         'jobindex': jobindex,
         'job': job,
     })

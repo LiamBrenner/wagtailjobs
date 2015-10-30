@@ -1,0 +1,24 @@
+{% extends "wagtailadmin/base.html" %}
+{% load i18n %}
+{% block titletag %}{% trans "jobs" %}{% endblock %}
+{% block bodyclass %}menu-job{% endblock %}
+{% block content %}
+
+	{% trans "Generate Invoice" as new_str %}
+	{% include "wagtailadmin/shared/header.html" with title=new_str subtitle=job icon="grip" %}
+
+	<div class="row row-flush nice-padding">
+		<form action="{% url 'wagtailjobs_invoice' pk=jobindex.pk job_pk=job.pk %}" method="POST">
+			{% csrf_token %}
+			<p>{% blocktrans %}Are you sure you would like to generate an invoice for this job?{% endblocktrans %}</p>
+			<input type="submit" class="button yes" value="{% trans 'Yes, generate invoice' %}" />
+		</form>
+	</div>
+{% endblock %}
+
+{% block extra_css %}
+	{% include "wagtailadmin/pages/_editor_css.html" %}
+{% endblock %}
+{% block extra_js %}
+	{% include "wagtailadmin/pages/_editor_js.html" %}
+{% endblock %}
