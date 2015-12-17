@@ -1,10 +1,10 @@
 {% extends "wagtailadmin/base.html" %}
 {% load i18n %}
-{% block titletag %}{% blocktrans %}New job{% endblocktrans %}{% endblock %}
+{% block titletag %}{% blocktrans %}New Job{% endblocktrans %}{% endblock %}
 {% block bodyclass %}menu-job{% endblock %}
 {% block content %}
     {% trans "New" as new_str %}
-    {% trans "job" as jobpost_str %}
+    {% trans "Job" as jobpost_str %}
     {% include "wagtailadmin/shared/header.html" with title=new_str subtitle=jobpost_str icon="job" %}
 
     <form action="{% url 'wagtailjobs_create' pk=jobindex.pk %}" method="POST">
@@ -14,14 +14,8 @@
 <footer>
             <ul>
                 <li class="actions">
-                    <div class="dropdown dropup dropdown-button match-width">
-                            <input type="submit" value="{% trans 'Create and Send To Driver(s)' %}" name='{{send_button_name}}' />
-                        <div class="dropdown-toggle icon icon-arrow-up"></div>
-
-                        <ul role="menu">
-                        <li>
-                            <input type="submit" value="{% trans 'Create and Save Only' %}" />
-                        </li>
+                    <div class='dropdown dropup match-width'>
+                        <input type="submit" value="{% trans 'Create and Save' %}" />
                     </div>
                 </li>
             </ul>

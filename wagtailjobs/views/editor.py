@@ -1,30 +1,31 @@
 import os
 import StringIO
-from xhtml2pdf import pisa
+
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
-from django.shortcuts import redirect, render, get_object_or_404
-from django.utils.translation import ugettext_lazy as _
 from django.core.mail import EmailMessage
-from django.template.loader import render_to_string
-from django.template.loader import get_template
-from django.template import Context
 from django.http import HttpResponse
-from django.conf import settings
+from django.shortcuts import get_object_or_404, redirect, render
+from django.template import Context
+from django.template.loader import get_template, render_to_string
 from django.utils import timezone
-from tlt.invoices.models import Invoice, InvoiceIndex
-from tlt.invoices.models import Job as InvoiceJob
-
-# TODO Swap with django.utils.lru_cache.lru_cache at Django 1.7
 from django.utils.functional import memoize
-
-from wagtail.wagtailadmin.edit_handlers import (
-    ObjectList, extract_panel_definitions_from_model_class)
-from wagtail.wagtailcore.models import Page
+from django.utils.module_loading import import_string
+from django.utils.translation import ugettext_lazy as _
+from tlt.invoices.models import Job as InvoiceJob
+from tlt.invoices.models import Invoice, InvoiceIndex
+from wagtail.wagtailadmin.edit_handlers import (ObjectList,
+                                                extract_panel_definitions_from_model_class)
 from wagtail.wagtailadmin.forms import CopyForm
+from wagtail.wagtailcore.models import Page
+from xhtml2pdf import pisa
 
 from ..models import get_jobindex_content_types
-from django.utils.module_loading import import_string
+
+# TODO Swap with django.utils.lru_cache.lru_cache at Django 1.7
+
+
 
 validation = import_string(getattr(settings, 'WAGTAIL_JOBS_VALIDATION', 'wagtailjobs.utils.validation.validation'))
 extra_step = import_string(getattr(settings, 'WAGTAIL_JOBS_EXTRA_STEP', 'wagtailjobs.utils.extra_steps.extra_step'))
@@ -101,7 +102,7 @@ def serve_pdf(job, request):
     # Write PDF to file
     # file = open(os.path.join(settings.MEDIA_ROOT, 'job #' + str(id) + '.pdf'), "w+b")
     file = StringIO.StringIO()
-    pisaStatus = pisa.CreatePDF(html, dest=file, link_callback=link_callback)
+    pisa.CreatePDF(html, dest=file, link_callback=link_callback)
 
     # Return PDF document through a Django HTTP response
     file.seek(0)
@@ -125,8 +126,7 @@ def create(request, pk):
         form = EditForm(request.POST, request.FILES, instance=job)
         is_sending_job = send_button_name in request.POST
         if form.is_valid() and validation(request, job, is_sending_job):
-            job = form.save()
-            job.save()
+            extra_step(request, job, form)
 
             if is_sending_job:
                 send_job(request, job)
