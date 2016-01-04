@@ -1,31 +1,30 @@
 from __future__ import absolute_import, unicode_literals
 
-import StringIO
 import os
-from xhtml2pdf import pisa
+import StringIO
 
-from six import text_type, string_types
+from six import string_types, text_type
 
+from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.shortcuts import render
-from django.utils.text import slugify
 from django.db.models.query import QuerySet
-from django.template.loader import get_template
-from django.template import Context
-from django.conf import settings
-from django.utils import timezone
 from django.http import HttpResponse
+from django.shortcuts import render
+from django.template import Context
+from django.template.loader import get_template
+from django.utils import timezone
+from django.utils.text import slugify
 from uuidfield import UUIDField
-
-
 from wagtail.contrib.wagtailroutablepage.models import RoutablePageMixin, route
 from wagtail.wagtailadmin.edit_handlers import FieldPanel
 from wagtail.wagtailcore.models import Page
 from wagtail.wagtailcore.utils import resolve_model_string
 from wagtail.wagtailsearch import index
 from wagtail.wagtailsearch.backends import get_search_backend
+from xhtml2pdf import pisa
 
+from .views import frontend
 
 JOBINDEX_MODEL_CLASSES = []
 _JOBINDEX_CONTENT_TYPES = []
@@ -81,6 +80,9 @@ class AbstractJob(models.Model):
         max_digits=6,
         decimal_places=2,
         help_text='Without dollar sign($)')
+
+    # User creating the job
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
 
     panels = [
         FieldPanel('amount'),
@@ -151,4 +153,3 @@ class AbstractJob(models.Model):
         return HttpResponse(file, content_type='application/pdf')
 
 # Need to import this down here to prevent circular imports :(
-from .views import frontend

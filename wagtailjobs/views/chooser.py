@@ -1,10 +1,9 @@
 from django.contrib.auth.decorators import permission_required
-from django.shortcuts import redirect, render, get_object_or_404
-
+from django.shortcuts import get_object_or_404, redirect, render
 from wagtail.wagtailcore.models import Page
 
-from ..models import get_jobindex_content_types
 from ..forms import SearchForm
+from ..models import get_jobindex_content_types
 
 
 @permission_required('wagtailadmin.access_admin')  # further permissions are enforced within the view
@@ -26,8 +25,15 @@ def choose(request):
 def index(request, pk):
     jobindex = get_object_or_404(Page, pk=pk, content_type__in=get_jobindex_content_types()).specific
     job = jobindex.get_job_model()
-    job_list = job.objects.filter(jobindex=jobindex)
     form = SearchForm()
+
+    # Permissions
+    if request.user.is_superuser:
+        job_list = job.objects.filter(jobindex=jobindex)
+
+    else:
+        job_list = job.objects.filter(jobindex=jobindex, user=request.user)
+
 
     return render(request, 'wagtailjobs/index.html', {
         'jobindex': jobindex,
@@ -39,8 +45,15 @@ def index(request, pk):
 def search(request, pk):
     jobindex = get_object_or_404(Page, pk=pk, content_type__in=get_jobindex_content_types()).specific
     job = jobindex.get_job_model()
-    job_list = job.objects.filter(jobindex=jobindex)
     form = SearchForm(request.GET or None)
+
+    # Permissions
+    if request.user.is_superuser:
+        job_list = job.objects.filter(jobindex=jobindex)
+
+    else:
+        job_list = job.objects.filter(jobindex=jobindex, user=request.user)
+
     if form.is_valid():
         query = form.cleaned_data['query']
         job_list = job_list.search(query)
