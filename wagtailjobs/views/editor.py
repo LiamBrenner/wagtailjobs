@@ -15,8 +15,6 @@ from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 from tlt.invoices.models import Job as InvoiceJob
 from tlt.invoices.models import Invoice, InvoiceIndex
-from wagtail.wagtailadmin.edit_handlers import (ObjectList,
-                                                extract_panel_definitions_from_model_class)
 from wagtail.wagtailadmin.forms import CopyForm
 from wagtail.wagtailcore.models import Page
 from xhtml2pdf import pisa
@@ -29,13 +27,11 @@ from ..models import get_jobindex_content_types
 
 validation = import_string(getattr(settings, 'WAGTAIL_JOBS_VALIDATION', 'wagtailjobs.utils.validation.validation'))
 extra_step = import_string(getattr(settings, 'WAGTAIL_JOBS_EXTRA_STEP', 'wagtailjobs.utils.extra_steps.extra_step'))
+panel_permissions = import_string(getattr(settings, 'WAGTAIL_JOBS_PANEL_PERMS', 'wagtailjobs.utils.panel_perms.panel_perms'))
 
 
-def get_job_edit_handler(Job):
-    panels = extract_panel_definitions_from_model_class(
-        Job, exclude=['jobindex'])
-    EditHandler = ObjectList(panels).bind_to_model(Job)
-    return EditHandler
+def get_job_edit_handler(Job, request):
+    return panel_permissions(Job, request)
 get_job_edit_handler = memoize(get_job_edit_handler, {}, 1)
 
 
@@ -118,7 +114,7 @@ def create(request, pk):
     send_button_name = 'send_job'
 
     job = Job(jobindex=jobindex)
-    EditHandler = get_job_edit_handler(Job)
+    EditHandler = get_job_edit_handler(Job, request)
     EditForm = EditHandler.get_form_class(Job)
 
     if request.method == 'POST':
@@ -159,7 +155,7 @@ def edit(request, pk, job_pk):
     job = get_object_or_404(Job, jobindex=jobindex, pk=job_pk)
     send_button_name = 'send_job'
 
-    EditHandler = get_job_edit_handler(Job)
+    EditHandler = get_job_edit_handler(Job, request)
     EditForm = EditHandler.get_form_class(Job)
 
     if request.method == 'POST':
