@@ -1,8 +1,8 @@
 from __future__ import absolute_import, unicode_literals
 
 from django.conf.urls import url
-from .views import chooser, editor
 
+from .views import chooser, editor
 
 urlpatterns = [
     url(r'^$', chooser.choose,
@@ -17,6 +17,8 @@ urlpatterns = [
         name='wagtailjobs_edit'),
     url(r'^(?P<pk>\d+)/delete/(?P<job_pk>.*)/$', editor.delete,
         name='wagtailjobs_delete'),
+    url(r'^(?P<pk>\d+)/cancel/(?P<job_pk>.*)/$', editor.cancel,
+        name='wagtailjobs_cancel'),
     url(r'^(?P<pk>\d+)/copy/(?P<job_pk>.*)/$', editor.copy,
         name='wagtailjobs_copy'),
     url(r'^(?P<pk>\d+)/invoice/(?P<job_pk>.*)/$', editor.invoice,

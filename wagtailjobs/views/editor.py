@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.template import Context
 from django.template.loader import get_template, render_to_string
 from django.utils import timezone
-from django.utils.functional import memoize
+from django.utils.lru_cache import lru_cache
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 from tlt.invoices.models import Job as InvoiceJob
@@ -21,18 +21,14 @@ from xhtml2pdf import pisa
 
 from ..models import get_jobindex_content_types
 
-# TODO Swap with django.utils.lru_cache.lru_cache at Django 1.7
-
-
-
 validation = import_string(getattr(settings, 'WAGTAIL_JOBS_VALIDATION', 'wagtailjobs.utils.validation.validation'))
 extra_step = import_string(getattr(settings, 'WAGTAIL_JOBS_EXTRA_STEP', 'wagtailjobs.utils.extra_steps.extra_step'))
 panel_permissions = import_string(getattr(settings, 'WAGTAIL_JOBS_PANEL_PERMS', 'wagtailjobs.utils.panel_perms.panel_perms'))
 
 
+@lru_cache(maxsize=None)
 def get_job_edit_handler(Job, request):
     return panel_permissions(Job, request)
-get_job_edit_handler = memoize(get_job_edit_handler, {}, 1)
 
 
 def send_job(request, job, admin=False):
@@ -206,6 +202,24 @@ def delete(request, pk, job_pk):
         'jobindex': jobindex,
         'job': job,
     })
+
+
+@permission_required('wagtailadmin.access_admin')  # further permissions are enforced within the view
+def cancel(request, pk, job_pk):
+    jobindex = get_object_or_404(Page, pk=pk, content_type__in=get_jobindex_content_types()).specific
+    Job = jobindex.get_job_model()
+    job = get_object_or_404(Job, jobindex=jobindex, pk=job_pk)
+    if hasattr(job, 'cancelled'):
+        if request.method == 'POST':
+            job.cancelled = True
+            job.save()
+            # TODO send email
+            return redirect('wagtailjobs_index', pk=pk)
+
+        return render(request, 'wagtailjobs/cancel.html', {
+            'jobindex': jobindex,
+            'job': job,
+        })
 
 @permission_required('wagtailadmin.access_admin')  # further permissions are enforced within the view
 def copy(request, pk, job_pk):
