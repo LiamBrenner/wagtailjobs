@@ -1,7 +1,10 @@
 from __future__ import absolute_import, print_function, unicode_literals
 import os
-import StringIO
 
+try:
+    import StringIO
+except ImportError:
+    from io import StringIO
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
