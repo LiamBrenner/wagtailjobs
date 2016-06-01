@@ -1,7 +1,11 @@
 from __future__ import absolute_import, unicode_literals, print_function
 
 import os
-import StringIO
+
+try:
+    import StringIO
+except ImportError:
+    from io import StringIO
 
 from six import string_types, text_type
 
