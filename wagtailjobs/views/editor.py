@@ -169,7 +169,7 @@ def edit(request, pk, job_pk):
                 return redirect('wagtailjobs_index', pk=jobindex.pk)
 
             else:
-                print job.uuid
+                print(job.uuid)
                 messages.success(request, _('The job "{0!s}" has been updated').format(job))
                 return redirect('wagtailjobs_index', pk=jobindex.pk)
 
@@ -233,8 +233,6 @@ def copy(request, pk, job_pk):
         job.uuid = None
         job.issue_date = timezone.now()
         job.save()
-        print job.uuid
-        print job.pk
         return redirect('wagtailjobs_index', pk=pk)
 
     return render(request, 'wagtailjobs/copy.html', {
