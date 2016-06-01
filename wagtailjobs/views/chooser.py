@@ -1,3 +1,5 @@
+from __future__ import absolute_import, print_function, unicode_literals
+
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import get_object_or_404, redirect, render
 from wagtail.wagtailcore.models import Page
