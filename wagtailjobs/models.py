@@ -1,4 +1,4 @@
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, unicode_literals, print_function
 
 import os
 import StringIO
@@ -139,7 +139,7 @@ class AbstractJob(models.Model):
         # Render html content through html template with context
         template = get_template(settings.PDF_TEMPLATE)
         html = template.render(Context({'job': self}))
-        print type(self)
+        print(type(self))
 
         # Write PDF to file
         file = StringIO.StringIO()
